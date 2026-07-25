@@ -9,21 +9,33 @@ import SwiftUI
 
 struct ProfileActionButtonsView: View {
     var body: some View {
-        HStack {
-            Button {
+        HStack(spacing: 8) {
+            profileButton(title: "Edit Profile") {
                 print("Edit Profile")
-            } label: {
-                Text("Edit Profile")
             }
-            .buttonStyle(.bordered)
-            .frame(maxWidth: .infinity)
-            Button {
+
+            profileButton(title: "Share Profile") {
                 print("Share Profile")
-            } label: {
-                Text("Share Profile")
             }
-            .buttonStyle(.bordered)
-            .frame(maxWidth: .infinity)
-        }.padding(.horizontal)
+        }
+        .padding(.horizontal)
+    }
+
+    private func profileButton(
+        title: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(
+                    .quaternary,
+                    in: RoundedRectangle(cornerRadius: 8)
+                )
+        }
+        .buttonStyle(.plain)
     }
 }
