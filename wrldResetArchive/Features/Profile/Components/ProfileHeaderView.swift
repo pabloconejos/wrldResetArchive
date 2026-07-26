@@ -9,9 +9,12 @@ import SwiftUI
 
 
 struct ProfileHeaderView: View {
+    
+    let profile: InstagramProfile
+    
     var body: some View {
         HStack {
-            Text("wrldreset")
+            Text(profile.username)
                 .font(.headline)
 
             Spacer()

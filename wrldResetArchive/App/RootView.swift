@@ -20,7 +20,12 @@ struct RootView: View {
             }
 
             Tab("Perfil", systemImage: "person.crop.circle") {
-                ProfileView()
+                if let profile = InstagramRepository.mock.profile(withID: "profile_1") {
+                    ProfileView(
+                        profile: profile,
+                        repository: .mock
+                    )
+                }
             }
         }
     }

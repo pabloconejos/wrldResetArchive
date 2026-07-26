@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ProfileInfoView: View {
+    
+    let profile: InstagramProfile
+    
     var body: some View {
         HStack(spacing: 24) {
             Image("profile _test")

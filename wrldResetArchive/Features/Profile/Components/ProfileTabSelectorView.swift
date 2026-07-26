@@ -13,6 +13,9 @@ enum ProfileTab: Int, Equatable {
 }
 
 struct ProfileTabSelectorView: View {
+    
+    let posts: [InstagramPost]
+    let repository: InstagramRepository
 
     @State private var selectedTab: ProfileTab = .posts // Esta vista tiene una variable que puede cambiar y cuando cambie SwiftUI debe volver a dibujar la vista.
     @Namespace private var tabIndicator // el namespace sirve para decir que estas dos posibles líneas representan realmente el mismo elemento visual.
@@ -27,13 +30,16 @@ struct ProfileTabSelectorView: View {
             }
             
             TabView(selection: $selectedTab) {
-                ProfilePostsGridView()
-                    .frame(
-                        maxWidth: .infinity,
-                        maxHeight: .infinity,
-                        alignment: .top
-                    )
-                    .tag(ProfileTab.posts)
+                ProfilePostsGridView(
+                    posts: posts,
+                    repository: repository
+                )
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .top
+                )
+                .tag(ProfileTab.posts)
 
                 Text("Vídeos")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

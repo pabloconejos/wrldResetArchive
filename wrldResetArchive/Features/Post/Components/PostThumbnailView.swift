@@ -18,13 +18,16 @@ struct PostThumbnailView: View {
         
         NavigationLink {
 
-            PostDetailView(post: post)
-                    .navigationTransition(
-                        .zoom(
-                            sourceID: post.id,
-                            in: namespace
-                        )
-                    )
+            PostDetailView(
+                post: post,
+                repository: .mock
+            )
+            .navigationTransition(
+                .zoom(
+                    sourceID: post.id,
+                    in: namespace
+                )
+            )
 
         } label: {
 

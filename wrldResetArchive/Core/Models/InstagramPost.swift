@@ -9,10 +9,14 @@ import Foundation
 
 struct InstagramPost: Identifiable {
     let id: String
+    let profileID: String
+
     let kind: InstagramPostKind
     let description: String?
     let publishedAt: Date?
+
     let mediaItems: [InstagramMediaItem]
+
     let isArchived: Bool
 }
 

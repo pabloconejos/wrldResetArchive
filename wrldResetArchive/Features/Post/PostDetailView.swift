@@ -10,13 +10,14 @@ import SwiftUI
 struct PostDetailView: View {
 
     let post: InstagramPost
+    let repository: InstagramRepository
 
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
 
-                PostHeaderView()
-
+                postHeader
+                
                 postMedia
 
                 PostActionsView()
@@ -76,5 +77,18 @@ struct PostDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal)
         .padding(.bottom, 20)
+    }
+    
+    @ViewBuilder
+    private var postHeader: some View {
+        if let profile = repository.profile(withID: post.profileID) {
+            PostHeaderView(profile: profile)
+        } else {
+            Text("Perfil no disponible")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+        }
     }
 }

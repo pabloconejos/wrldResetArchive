@@ -9,7 +9,8 @@ import SwiftUI
 
 struct ProfilePostsGridView: View {
 
-    private let posts = MockInstagramData.posts
+    let posts: [InstagramPost]
+    let repository: InstagramRepository
     
     @Namespace private var postTransition
     

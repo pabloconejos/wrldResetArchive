@@ -8,17 +8,27 @@
 import SwiftUI
 
 struct ProfileDescriptionView: View {
+
+    let profile: InstagramProfile
+
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Make Europe Great Again")
-                .font(.headline)
 
-            Text("Mi archivo")
-                .font(.subheadline)
+            if let displayName = profile.displayName {
+                Text(displayName)
+                    .font(.headline)
+            }
 
-            Text("Valencia")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            if let biography = profile.biography {
+                Text(biography)
+                    .font(.subheadline)
+            }
+
+            if let location = profile.location {
+                Text(location)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal)

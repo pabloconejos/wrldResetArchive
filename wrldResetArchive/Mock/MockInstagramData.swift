@@ -9,10 +9,21 @@ import Foundation
 
 struct MockInstagramData {
 
-    static let posts: [InstagramPost] = [
+    static let profiles: [InstagramProfile] = [
+        InstagramProfile(
+            id: "profile_1",
+            username: "pabloconejos",
+            displayName: "Pablo Conejos",
+            biography: "Mi archivo de Instagram",
+            location: "Valencia",
+            profileImageName: "profile"
+        )
+    ]
 
+    static let posts: [InstagramPost] = [
         InstagramPost(
             id: "post_1",
+            profileID: "profile_1",
             kind: .post,
             description: "Noruega 🇳🇴",
             publishedAt: Date(),
@@ -28,22 +39,17 @@ struct MockInstagramData {
                     ),
                     caption: nil,
                     date: Date()
-                ),
-                InstagramMediaItem(
-                    id: "media_1",
-                    position: 0,
-                    asset: InstagramAsset(
-                        id: "asset_1",
-                        relativePath: "1",
-                        type: .image,
-                        subtitlesPath: nil
-                    ),
-                    caption: nil,
-                    date: Date()
                 )
             ],
             isArchived: false
         )
-
     ]
+}
+
+extension InstagramRepository {
+
+    static let mock = InstagramRepository(
+        profiles: MockInstagramData.profiles,
+        posts: MockInstagramData.posts
+    )
 }

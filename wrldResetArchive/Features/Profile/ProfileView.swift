@@ -8,14 +8,33 @@
 import SwiftUI
 
 struct ProfileView: View {
+    
+    let profile: InstagramProfile
+    let repository: InstagramRepository
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    ProfileInfoView()
-                    ProfileDescriptionView()
+                    ProfileInfoView(profile: profile)
+
+                    ProfileDescriptionView(profile: profile)
+
                     ProfileActionButtonsView()
-                    ProfileTabSelectorView()
+
+                    ProfileTabSelectorView(
+                        posts: repository.posts.filter { post in
+                            post.profileID == profile.id
+                        },
+                        repository: repository
+                    )
+
+                    ProfilePostsGridView(
+                        posts: repository.posts.filter {
+                            $0.profileID == profile.id
+                        },
+                        repository: repository
+                    )
                 }
             }
             .navigationTitle("wrldreset")
