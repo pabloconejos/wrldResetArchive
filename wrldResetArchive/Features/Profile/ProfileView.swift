@@ -29,12 +29,6 @@ struct ProfileView: View {
                         repository: repository
                     )
 
-                    ProfilePostsGridView(
-                        posts: repository.posts.filter {
-                            $0.profileID == profile.id
-                        },
-                        repository: repository
-                    )
                 }
             }
             .navigationTitle("wrldreset")

@@ -10,6 +10,7 @@ import SwiftUI
 struct PostThumbnailView: View {
 
     let post: InstagramPost
+    let repository: InstagramRepository
     let namespace: Namespace.ID
 
     private let aspectRatio: CGFloat = 4.0 / 5.0
@@ -20,7 +21,7 @@ struct PostThumbnailView: View {
 
             PostDetailView(
                 post: post,
-                repository: .mock
+                repository: repository,
             )
             .navigationTransition(
                 .zoom(

@@ -26,6 +26,7 @@ struct ProfilePostsGridView: View {
             ForEach(posts) { post in
                 PostThumbnailView(
                     post: post,
+                    repository: repository,
                     namespace: postTransition
                 )
             }
