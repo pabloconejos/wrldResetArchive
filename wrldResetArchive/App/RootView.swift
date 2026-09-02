@@ -12,7 +12,7 @@ struct RootView: View {
     var body: some View {
         TabView {
             Tab("Inicio", systemImage: "house") {
-                APIDebugView()
+                HomeView()
             }
 
             Tab("Buscar", systemImage: "magnifyingglass") {
@@ -23,6 +23,9 @@ struct RootView: View {
                 ProfileView()
             }
         }
+        .toolbarBackground(.ultraThinMaterial, for: .tabBar)
+        .toolbarBackgroundVisibility(.visible, for: .tabBar)
+        .tabBarMinimizeBehavior(.never)
     }
 }
 

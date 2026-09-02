@@ -29,24 +29,19 @@ struct ProfileTabSelectorView: View {
         VStack(spacing: 0) {
             tabBar
 
-            TabView(selection: $selectedTab) {
-                ScrollView {
-                    ProfilePostsGridView(
-                        contents: postContents,
-                        viewModel: viewModel
-                    )
-                }
-                .tag(ProfileTab.posts)
-
-                ScrollView {
-                    ProfilePostsGridView(
-                        contents: videoContents,
-                        viewModel: viewModel
-                    )
-                }
-                .tag(ProfileTab.videos)
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
+            ProfilePostsGridView(
+                contents: selectedContents,
+                viewModel: viewModel
+            )
+        }
+    }
+    
+    private var selectedContents: [APIInstagramContent] {
+        switch selectedTab {
+        case .posts:
+            return postContents
+        case .videos:
+            return videoContents
         }
     }
 

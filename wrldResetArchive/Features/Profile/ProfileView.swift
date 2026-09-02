@@ -16,23 +16,26 @@ struct ProfileView: View {
                         description: Text(errorMessage)
                     )
                 } else if let profile = viewModel.profile {
-                    VStack(spacing: 0) {
-                        VStack(spacing: 16) {
-                            ProfileInfoView(
-                                profile: profile,
-                                summary: viewModel.summary
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            VStack(spacing: 16) {
+                                ProfileInfoView(
+                                    profile: profile,
+                                    summary: viewModel.summary
+                                )
+
+                                ProfileDescriptionView(profile: profile)
+
+                                ProfileActionButtonsView()
+                            }
+
+                            ProfileTabSelectorView(
+                                contents: viewModel.contents,
+                                viewModel: viewModel
                             )
-
-                            ProfileDescriptionView(profile: profile)
-
-                            ProfileActionButtonsView()
                         }
-
-                        ProfileTabSelectorView(
-                            contents: viewModel.contents,
-                            viewModel: viewModel
-                        )
                     }
+                    .ignoresSafeArea(.container, edges: .bottom)
                 } else {
                     ProgressView()
                 }
