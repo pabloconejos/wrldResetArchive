@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum ProfileTab: Int, Equatable {
+enum ProfileTab: Int, Hashable {
     case posts
     case videos
 }
@@ -10,7 +10,7 @@ struct ProfileTabSelectorView: View {
     let contents: [APIInstagramContent]
     let viewModel: RemoteProfileViewModel
 
-    @State private var selectedTab: ProfileTab = .posts
+    @State private var selectedTab: ProfileTab? = .posts
     @Namespace private var tabIndicator
 
     private var postContents: [APIInstagramContent] {
@@ -29,19 +29,27 @@ struct ProfileTabSelectorView: View {
         VStack(spacing: 0) {
             tabBar
 
-            ProfilePostsGridView(
-                contents: selectedContents,
-                viewModel: viewModel
-            )
-        }
-    }
-    
-    private var selectedContents: [APIInstagramContent] {
-        switch selectedTab {
-        case .posts:
-            return postContents
-        case .videos:
-            return videoContents
+            ScrollView(.horizontal) {
+                LazyHStack(alignment: .top, spacing: 0) {
+                    ProfilePostsGridView(
+                        contents: postContents,
+                        viewModel: viewModel
+                    )
+                    .containerRelativeFrame(.horizontal)
+                    .id(ProfileTab.posts)
+
+                    ProfilePostsGridView(
+                        contents: videoContents,
+                        viewModel: viewModel
+                    )
+                    .containerRelativeFrame(.horizontal)
+                    .id(ProfileTab.videos)
+                }
+                .scrollTargetLayout()
+            }
+            .scrollIndicators(.hidden)
+            .scrollTargetBehavior(.paging)
+            .scrollPosition(id: $selectedTab)
         }
     }
 
