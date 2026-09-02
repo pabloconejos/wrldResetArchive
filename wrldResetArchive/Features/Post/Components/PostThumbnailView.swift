@@ -9,39 +9,53 @@ import SwiftUI
 
 struct PostThumbnailView: View {
 
-    let post: InstagramPost
-    let repository: InstagramRepository
+    let content: APIInstagramContent
+    let viewModel: RemoteProfileViewModel
     let namespace: Namespace.ID
 
     private let aspectRatio: CGFloat = 4.0 / 5.0
 
     var body: some View {
-        
         NavigationLink {
-
-            PostDetailView(
-                post: post,
-                repository: repository,
-            )
-            .navigationTransition(
-                .zoom(
-                    sourceID: post.id,
-                    in: namespace
+            if let profile = viewModel.profile {
+                PostDetailView(
+                    content: content,
+                    profile: profile,
+                    viewModel: viewModel
                 )
-            )
-
+                .navigationTransition(
+                    .zoom(
+                        sourceID: content.id,
+                        in: namespace
+                    )
+                )
+            }
         } label: {
-
             Color.clear
                 .aspectRatio(aspectRatio, contentMode: .fit)
                 .overlay {
-                    if let firstMedia = post.mediaItems.first {
+                    if let firstMedia = content.mediaItems.first {
                         ZStack {
-                            Image(firstMedia.asset.relativePath)
-                                .resizable()
-                                .scaledToFill()
+                            if firstMedia.mediaType == .image {
+                                AsyncImage(url: viewModel.mediaURL(for: firstMedia)) { image in
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                } placeholder: {
+                                    Rectangle()
+                                        .fill(.gray.opacity(0.15))
+                                }
+                            } else {
+                                Rectangle()
+                                    .fill(.gray.opacity(0.15))
 
-                            if post.mediaItems.count > 1 {
+                                Image(systemName: "play.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                                    .shadow(radius: 2)
+                            }
+
+                            if content.mediaItems.count > 1 {
                                 Image(systemName: "square.on.square.fill")
                                     .foregroundStyle(.white)
                                     .padding(8)
@@ -62,12 +76,10 @@ struct PostThumbnailView: View {
                 }
                 .clipped()
                 .matchedTransitionSource(
-                    id: post.id,
+                    id: content.id,
                     in: namespace
                 )
-
         }
-        
-        
+        .buttonStyle(.plain)
     }
 }

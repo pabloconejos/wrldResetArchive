@@ -9,9 +9,15 @@ import Foundation
 
 struct InstagramProfile: Identifiable {
     let id: String
+
     let username: String
     let displayName: String?
     let biography: String?
-    let location: String?
-    let profileImageName: String?
+
+    let profileImagePath: String?
+
+    let followersCount: Int?
+    let followingCount: Int?
+
+    let externalURL: URL?
 }

@@ -9,27 +9,21 @@ import SwiftUI
 
 struct PostHeaderView: View {
 
-    let profile: InstagramProfile
-
+    let profile: APIInstagramProfile
+    
     var body: some View {
         HStack(spacing: 10) {
-
-            if let profileImageName = profile.profileImageName {
-                Image(profileImageName)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 34, height: 34)
-                    .clipShape(Circle())
-            }
+            profileImage
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(profile.username)
                     .font(.subheadline)
                     .fontWeight(.semibold)
 
-                if let location = profile.location {
-                    Text(location)
+                if let displayName = profile.displayName {
+                    Text(displayName)
                         .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
 
@@ -44,5 +38,14 @@ struct PostHeaderView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 10)
+    }
+
+    @ViewBuilder
+    private var profileImage: some View {
+        Image(systemName: "person.crop.circle.fill")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 34, height: 34)
+            .foregroundStyle(.secondary)
     }
 }

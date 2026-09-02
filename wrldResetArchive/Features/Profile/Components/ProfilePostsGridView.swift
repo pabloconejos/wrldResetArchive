@@ -9,12 +9,10 @@ import SwiftUI
 
 struct ProfilePostsGridView: View {
 
-    let posts: [InstagramPost]
-    let repository: InstagramRepository
-    
+    let contents: [APIInstagramContent]
+    let viewModel: RemoteProfileViewModel
+
     @Namespace private var postTransition
-    
-    private let postAspectRatio: CGFloat = 4.0 / 5.0
 
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 1),
@@ -23,10 +21,10 @@ struct ProfilePostsGridView: View {
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 1) {
-            ForEach(posts) { post in
+            ForEach(contents) { content in
                 PostThumbnailView(
-                    post: post,
-                    repository: repository,
+                    content: content,
+                    viewModel: viewModel,
                     namespace: postTransition
                 )
             }

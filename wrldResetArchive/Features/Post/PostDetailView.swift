@@ -9,15 +9,15 @@ import SwiftUI
 
 struct PostDetailView: View {
 
-    let post: InstagramPost
-    let repository: InstagramRepository
+    let content: APIInstagramContent
+    let profile: APIInstagramProfile
+    let viewModel: RemoteProfileViewModel
 
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
+                PostHeaderView(profile: profile)
 
-                postHeader
-                
                 postMedia
 
                 PostActionsView()
@@ -29,14 +29,31 @@ struct PostDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    @ViewBuilder // Este bloque no devuelve una única vista de forma tradicional. Construye una composición de vistas de SwiftUI. Porque las dos ramas de normal tienen que devolver el mismo tipo de datos
+    @ViewBuilder
     private var postMedia: some View {
-        if let firstMedia = post.mediaItems.first {
-            Image(firstMedia.asset.relativePath)
-                .resizable()
-                .scaledToFit()
+        if let firstMedia = content.mediaItems.first {
+            if firstMedia.mediaType == .image {
+                AsyncImage(url: viewModel.mediaURL(for: firstMedia)) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                } placeholder: {
+                    ProgressView()
+                        .frame(height: 350)
+                }
                 .frame(maxWidth: .infinity)
                 .background(Color.black)
+            } else {
+                ZStack {
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(height: 350)
+
+                    Image(systemName: "play.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(.white)
+                }
+            }
         } else {
             ContentUnavailableView(
                 "Contenido no disponible",
@@ -48,21 +65,12 @@ struct PostDetailView: View {
 
     private var postInformation: some View {
         VStack(alignment: .leading, spacing: 8) {
-
-            Text("127 Me gusta")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-
-            if let description = post.description {
+            if let description = content.title, !description.isEmpty {
                 Text(description)
                     .font(.subheadline)
             }
 
-            Text("Ver los 8 comentarios")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            if let publishedAt = post.publishedAt {
+            if let publishedAt = content.createdAtInstagram {
                 Text(
                     publishedAt.formatted(
                         date: .long,
@@ -77,18 +85,5 @@ struct PostDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal)
         .padding(.bottom, 20)
-    }
-    
-    @ViewBuilder
-    private var postHeader: some View {
-        if let profile = repository.profile(withID: post.profileID) {
-            PostHeaderView(profile: profile)
-        } else {
-            Text("Perfil no disponible")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-        }
     }
 }

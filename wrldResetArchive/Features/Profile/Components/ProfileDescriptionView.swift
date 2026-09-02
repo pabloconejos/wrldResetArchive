@@ -9,25 +9,19 @@ import SwiftUI
 
 struct ProfileDescriptionView: View {
 
-    let profile: InstagramProfile
+    let profile: APIInstagramProfile
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-
             if let displayName = profile.displayName {
                 Text(displayName)
                     .font(.headline)
             }
 
-            if let biography = profile.biography {
-                Text(biography)
+            if let website = profile.website {
+                Text(website)
                     .font(.subheadline)
-            }
-
-            if let location = profile.location {
-                Text(location)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.blue)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

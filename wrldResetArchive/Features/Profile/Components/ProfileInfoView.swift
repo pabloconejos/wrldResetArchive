@@ -8,37 +8,62 @@
 import SwiftUI
 
 struct ProfileInfoView: View {
-    
-    let profile: InstagramProfile
-    
+
+    let profile: APIInstagramProfile
+    let summary: APIInstagramProfileSummary?
+
     var body: some View {
-        HStack(spacing: 24) {
-            Image("profile _test")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 72, height: 72)
-                .clipShape(Circle())
+        HStack {
+            profileImage
 
             Spacer()
 
-            HStack(spacing: 24) {
-                statistic(number: "4652", label: "Pubs")
-                statistic(number: "812", label: "Seg")
-                statistic(number: "430", label: "Siguiendo")
-            }
+            statistic(
+                number: formattedCount(summary?.count(for: .post)),
+                label: "Pubs"
+            )
+
+            Spacer()
+
+            statistic(
+                number: "-",
+                label: "Seguidores"
+            )
+
+            Spacer()
+
+            statistic(
+                number: "-",
+                label: "Siguiendo"
+            )
+
+            Spacer()
         }
-        .padding(.horizontal)
+        .padding()
+    }
+
+    private var profileImage: some View {
+        Image(systemName: "person.crop.circle.fill")
+            .resizable()
+            .frame(width: 86, height: 86)
+            .clipShape(Circle())
+    }
+
+    private func formattedCount(_ value: Int?) -> String {
+        guard let value else {
+            return "-"
+        }
+
+        return value.formatted()
     }
 
     private func statistic(number: String, label: String) -> some View {
-        VStack(spacing: 2) {
+        VStack {
             Text(number)
                 .font(.headline)
 
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.secondary)
         }
-        .frame(minWidth: 52)
     }
 }

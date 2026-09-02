@@ -1,43 +1,52 @@
-//
-//  ProfileView.swift
-//  wrldResetArchive
-//
-//  Created by Pablo Conejos on 25/07/2026.
-//
-
 import SwiftUI
 
 struct ProfileView: View {
-    
-    let profile: InstagramProfile
-    let repository: InstagramRepository
-    
+
+    @StateObject private var viewModel = RemoteProfileViewModel()
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    ProfileInfoView(profile: profile)
-
-                    ProfileDescriptionView(profile: profile)
-
-                    ProfileActionButtonsView()
-
-                    ProfileTabSelectorView(
-                        posts: repository.posts.filter { post in
-                            post.profileID == profile.id
-                        },
-                        repository: repository
+            Group {
+                if viewModel.isLoading {
+                    ProgressView()
+                } else if let errorMessage = viewModel.errorMessage {
+                    ContentUnavailableView(
+                        "No se pudo cargar",
+                        systemImage: "wifi.exclamationmark",
+                        description: Text(errorMessage)
                     )
+                } else if let profile = viewModel.profile {
+                    VStack(spacing: 0) {
+                        VStack(spacing: 16) {
+                            ProfileInfoView(
+                                profile: profile,
+                                summary: viewModel.summary
+                            )
 
+                            ProfileDescriptionView(profile: profile)
+
+                            ProfileActionButtonsView()
+                        }
+
+                        ProfileTabSelectorView(
+                            contents: viewModel.contents,
+                            viewModel: viewModel
+                        )
+                    }
+                } else {
+                    ProgressView()
                 }
             }
-            .navigationTitle("wrldreset")
+            .navigationTitle(viewModel.profile?.username ?? "Perfil")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     addButton
                     optionsMenu
                 }
+            }
+            .task {
+                await viewModel.load()
             }
         }
     }
@@ -63,7 +72,7 @@ struct ProfileView: View {
             } label: {
                 Label("Información del archivo", systemImage: "archivebox")
             }
-            
+
             Button {
                 print("About App")
             } label: {
