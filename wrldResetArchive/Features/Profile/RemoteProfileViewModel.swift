@@ -29,12 +29,30 @@ final class RemoteProfileViewModel: ObservableObject {
     }
 
     func load() async {
-        
         guard profile == nil else {
             return
         }
 
-        isLoading = true
+        await loadProfile(showFullScreenLoading: true)
+    }
+
+    func refresh() async {
+        guard !isLoading else {
+            return
+        }
+
+        guard !isLoadingMore else {
+            return
+        }
+
+        await loadProfile(showFullScreenLoading: profile == nil)
+    }
+
+    private func loadProfile(showFullScreenLoading: Bool) async {
+        if showFullScreenLoading {
+            isLoading = true
+        }
+
         errorMessage = nil
 
         do {
