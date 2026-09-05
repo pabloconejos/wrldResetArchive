@@ -27,6 +27,15 @@ struct ProfilePostsGridView: View {
                     viewModel: viewModel,
                     namespace: postTransition
                 )
+                .task {
+                    await viewModel.loadMoreContentsIfNeeded(currentContent: content)
+                }
+            }
+            
+            if viewModel.isLoadingMore {
+                ProgressView()
+                    .padding()
+                    .gridCellColumns(3)
             }
         }
     }

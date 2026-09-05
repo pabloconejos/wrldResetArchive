@@ -50,7 +50,7 @@ struct ProfileView: View {
             }
             .task {
                 await viewModel.load()
-            }
+            } // este .task significa => Cuando esta vista aparece en pantalla, ejecuta esta tarea asíncrona.
         }
     }
 
