@@ -29,6 +29,11 @@ final class RemoteProfileViewModel: ObservableObject {
     }
 
     func load() async {
+        
+        guard profile == nil else {
+            return
+        }
+
         isLoading = true
         errorMessage = nil
 
