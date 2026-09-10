@@ -11,6 +11,6 @@ struct WrldresetAPIConfiguration {
     let baseURL: URL
 
     static let development = WrldresetAPIConfiguration(
-        baseURL: URL(string: "http://localhost:8080")!
+        baseURL: URL(string: "http://192.168.1.94:8080")!
     )
 }
