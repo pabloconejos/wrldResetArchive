@@ -34,51 +34,56 @@ struct PostThumbnailView: View {
             Color.clear
                 .aspectRatio(aspectRatio, contentMode: .fit)
                 .overlay {
-                    if let firstMedia = content.mediaItems.first {
-                        ZStack {
-                            if firstMedia.mediaType == .image {
-                                AsyncImage(url: viewModel.mediaURL(for: firstMedia)) { image in
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                } placeholder: {
+                    Group {
+                        if let firstMedia = content.mediaItems.first {
+                            ZStack {
+                                if firstMedia.mediaType == .image {
+                                    AsyncImage(url: viewModel.mediaURL(for: firstMedia)) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                    } placeholder: {
+                                        Rectangle()
+                                            .fill(.gray.opacity(0.15))
+                                    }
+                                } else {
                                     Rectangle()
                                         .fill(.gray.opacity(0.15))
+
+                                    Image(systemName: "play.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.white)
+                                        .shadow(radius: 2)
                                 }
-                            } else {
-                                Rectangle()
-                                    .fill(.gray.opacity(0.15))
 
-                                Image(systemName: "play.fill")
-                                    .font(.title2)
-                                    .foregroundStyle(.white)
-                                    .shadow(radius: 2)
+                                if content.mediaItems.count > 1 {
+                                    Image(systemName: "square.on.square.fill")
+                                        .foregroundStyle(.white)
+                                        .padding(8)
+                                        .frame(
+                                            maxWidth: .infinity,
+                                            maxHeight: .infinity,
+                                            alignment: .topTrailing
+                                        )
+                                        .shadow(radius: 2)
+                                }
                             }
-
-                            if content.mediaItems.count > 1 {
-                                Image(systemName: "square.on.square.fill")
-                                    .foregroundStyle(.white)
-                                    .padding(8)
-                                    .frame(
-                                        maxWidth: .infinity,
-                                        maxHeight: .infinity,
-                                        alignment: .topTrailing
-                                    )
-                                    .shadow(radius: 2)
-                            }
+                        } else {
+                            ContentUnavailableView(
+                                "Sin contenido",
+                                systemImage: "photo"
+                            )
                         }
-                    } else {
-                        ContentUnavailableView(
-                            "Sin contenido",
-                            systemImage: "photo"
-                        )
                     }
+                    .allowsHitTesting(false)
                 }
                 .clipped()
+                .contentShape(Rectangle())
                 .matchedTransitionSource(
                     id: content.id,
                     in: namespace
                 )
+
         }
         .buttonStyle(.plain)
     }

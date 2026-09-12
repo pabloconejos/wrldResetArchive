@@ -23,8 +23,7 @@ struct PostDetailItemView: View {
                 PostActionsView()
 
                 postInformation
-            }.navigationTitle("Publicación")
-            .navigationBarTitleDisplayMode(.inline)
+            }
     }
 
     @ViewBuilder

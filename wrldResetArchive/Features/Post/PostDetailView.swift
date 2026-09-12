@@ -12,7 +12,7 @@ struct PostDetailView: View {
     let profile: APIInstagramProfile
     let viewModel: RemoteProfileViewModel
 
-    @State private var scrollPosition: String?
+    @State private var scrollPosition = ScrollPosition(idType: String.self)
 
     init(
         content: APIInstagramContent,
@@ -22,18 +22,24 @@ struct PostDetailView: View {
         initialContent = content
         self.profile = profile
         self.viewModel = viewModel
-        _scrollPosition = State(initialValue: content.id)
+    }
+
+    private var feedContents: [APIInstagramContent] {
+        viewModel.contents.filter { content in
+            content.contentType == .post || content.contentType == .reel
+        }
     }
 
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 24) {
-                ForEach(viewModel.contents) { content in
+                ForEach(feedContents) { content in
                     PostDetailItemView(
                         content: content,
                         profile: profile,
                         viewModel: viewModel
                     )
+                    .id(content.id)
                     .task {
                         await viewModel.loadMoreContentsIfNeeded(
                             currentContent: content
@@ -43,6 +49,11 @@ struct PostDetailView: View {
             }
             .scrollTargetLayout()
         }
-        .scrollPosition(id: $scrollPosition, anchor: .top)
+        .scrollPosition($scrollPosition, anchor: .top)
+        .navigationTitle("Publicación")
+        .navigationBarTitleDisplayMode(.inline)
+        .task(id: initialContent.id) {
+            scrollPosition.scrollTo(id: initialContent.id, anchor: .top)
+        }
     }
 }
