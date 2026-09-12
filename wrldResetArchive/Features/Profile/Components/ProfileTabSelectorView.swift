@@ -12,6 +12,12 @@ struct ProfileTabSelectorView: View {
 
     @State private var selectedTab: ProfileTab? = .posts
     @Namespace private var tabIndicator
+    
+    private var fullContent: [APIInstagramContent] {
+        contents.filter { content in
+            content.contentType == .post || content.contentType == .reel
+        }
+    }
 
     private var postContents: [APIInstagramContent] {
         contents.filter { content in
@@ -30,22 +36,12 @@ struct ProfileTabSelectorView: View {
             tabBar
 
             ScrollView(.horizontal) {
-                LazyHStack(alignment: .top, spacing: 0) {
-                    ProfilePostsGridView(
-                        contents: postContents,
-                        viewModel: viewModel
-                    )
-                    .containerRelativeFrame(.horizontal)
-                    .id(ProfileTab.posts)
-
-                    ProfilePostsGridView(
-                        contents: videoContents,
-                        viewModel: viewModel
-                    )
-                    .containerRelativeFrame(.horizontal)
-                    .id(ProfileTab.videos)
-                }
-                .scrollTargetLayout()
+                ProfilePostsGridView(
+                    contents: fullContent,
+                    viewModel: viewModel
+                )
+                .containerRelativeFrame(.horizontal)
+                .id(ProfileTab.posts)
             }
             .scrollIndicators(.hidden)
             .scrollTargetBehavior(.paging)
@@ -56,7 +52,7 @@ struct ProfileTabSelectorView: View {
     private var tabBar: some View {
         HStack {
             tabButton(icon: "square.grid.3x3", tab: .posts)
-            tabButton(icon: "play.rectangle", tab: .videos)
+            
         }
         .frame(height: 44)
     }
