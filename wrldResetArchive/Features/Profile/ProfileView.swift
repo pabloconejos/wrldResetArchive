@@ -9,19 +9,6 @@ struct ProfileView: View {
             Group {
                 if viewModel.isLoading {
                     ProgressView()
-                } else if let errorMessage = viewModel.errorMessage {
-                    ScrollView {
-                        ContentUnavailableView(
-                            "No se pudo cargar",
-                            systemImage: "wifi.exclamationmark",
-                            description: Text(errorMessage)
-                        )
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 180)
-                    }
-                    .refreshable {
-                        await viewModel.refresh()
-                    }
                 } else if let profile = viewModel.profile {
                     ScrollView {
                         VStack(spacing: 0) {
@@ -43,6 +30,19 @@ struct ProfileView: View {
                         }
                     }
                     .ignoresSafeArea(.container, edges: .bottom)
+                    .refreshable {
+                        await viewModel.refresh()
+                    }
+                } else if let errorMessage = viewModel.errorMessage {
+                    ScrollView {
+                        ContentUnavailableView(
+                            "No se pudo cargar",
+                            systemImage: "wifi.exclamationmark",
+                            description: Text(errorMessage)
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 180)
+                    }
                     .refreshable {
                         await viewModel.refresh()
                     }

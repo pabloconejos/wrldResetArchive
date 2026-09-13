@@ -64,8 +64,6 @@ final class RemoteProfileViewModel: ObservableObject {
                 return
             }
 
-            profile = firstProfile
-
             async let summaryRequest = apiClient.fetchProfileSummary(profileId: firstProfile.id)
             async let contentsRequest = apiClient.fetchContents(
                 profileId: firstProfile.id,
@@ -73,9 +71,11 @@ final class RemoteProfileViewModel: ObservableObject {
                 size: contentsPageSize
             )
 
-            summary = try await summaryRequest
-
+            let fetchedSummary = try await summaryRequest
             let firstContentsPage = try await contentsRequest
+
+            profile = firstProfile
+            summary = fetchedSummary
             contents = firstContentsPage.content
             currentContentsPage = firstContentsPage.page.number
             totalContentsPages = firstContentsPage.page.totalPages

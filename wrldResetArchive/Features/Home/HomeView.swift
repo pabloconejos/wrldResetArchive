@@ -16,6 +16,11 @@ struct HomeView: View {
             Group {
                 if viewModel.isLoading {
                     ProgressView()
+                } else if let profile = viewModel.profile {
+                    PostFeedView(
+                        profile: profile,
+                        viewModel: viewModel
+                    )
                 } else if let errorMessage = viewModel.errorMessage {
                     ScrollView {
                         ContentUnavailableView(
@@ -29,11 +34,6 @@ struct HomeView: View {
                     .refreshable {
                         await viewModel.refresh()
                     }
-                } else if let profile = viewModel.profile {
-                    PostFeedView(
-                        profile: profile,
-                        viewModel: viewModel
-                    )
                 } else {
                     ProgressView()
                 }
