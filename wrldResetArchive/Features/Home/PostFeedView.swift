@@ -25,7 +25,7 @@ struct PostFeedView: View {
         ScrollView {
             LazyVStack(spacing: 24) {
                 ForEach(Array(shuffledContents.enumerated()), id: \.element.id) { index, content in
-                    PostDetailItemView(
+                    PostContentView(
                         content: content,
                         profile: profile,
                         viewModel: viewModel

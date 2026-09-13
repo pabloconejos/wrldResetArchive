@@ -1,5 +1,5 @@
 //
-//  PostDetailItemView.swift
+//  PostContentView.swift
 //  wrldResetArchive
 //
 //  Created by Pablo Conejos on 12/09/2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PostDetailItemView: View {
+struct PostContentView: View {
     
     let content: APIInstagramContent
     let profile: APIInstagramProfile

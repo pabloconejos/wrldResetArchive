@@ -14,7 +14,7 @@ struct PostDetailView: View {
 
     var body: some View {
         ScrollView {
-            PostDetailItemView(
+            PostContentView(
                 content: content,
                 profile: profile,
                 viewModel: viewModel
