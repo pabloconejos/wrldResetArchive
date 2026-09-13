@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct APIPage<T: Decodable>: Decodable {
+nonisolated struct APIPage<T: Decodable & Sendable>: Decodable, Sendable {
     let content: [T]
     let page: APIPageInfo
 
@@ -38,14 +38,14 @@ struct APIPage<T: Decodable>: Decodable {
     }
 }
 
-struct APIPageInfo: Decodable {
+nonisolated struct APIPageInfo: Decodable, Sendable {
     let size: Int
     let number: Int
     let totalElements: Int
     let totalPages: Int
 }
 
-struct APIInstagramProfile: Decodable, Identifiable {
+nonisolated struct APIInstagramProfile: Decodable, Identifiable, Sendable {
     let id: String
     let username: String
     let displayName: String?
@@ -55,7 +55,7 @@ struct APIInstagramProfile: Decodable, Identifiable {
     let updatedAt: Date?
 }
 
-struct APIInstagramProfileSummary: Decodable {
+nonisolated struct APIInstagramProfileSummary: Decodable, Sendable {
     let profileId: String
     let username: String
     let totalContents: Int
@@ -67,7 +67,7 @@ struct APIInstagramProfileSummary: Decodable {
     }
 }
 
-struct APIInstagramContent: Decodable, Identifiable {
+nonisolated struct APIInstagramContent: Decodable, Identifiable, Sendable {
     let id: String
     let contentType: APIInstagramContentType
     let title: String?
@@ -75,7 +75,7 @@ struct APIInstagramContent: Decodable, Identifiable {
     let mediaItems: [APIMediaItem]
 }
 
-struct APIMediaItem: Decodable, Identifiable {
+nonisolated struct APIMediaItem: Decodable, Identifiable, Sendable {
     let id: String
     let position: Int
     let mediaType: APIMediaType
@@ -87,7 +87,7 @@ struct APIMediaItem: Decodable, Identifiable {
     let createdAtInstagram: Date?
 }
 
-enum APIInstagramContentType: String, Decodable {
+nonisolated enum APIInstagramContentType: String, Decodable, Sendable {
     case post = "POST"
     case archivedPost = "ARCHIVED_POST"
     case reel = "REEL"
@@ -96,7 +96,7 @@ enum APIInstagramContentType: String, Decodable {
     case profilePhoto = "PROFILE_PHOTO"
 }
 
-enum APIMediaType: String, Decodable {
+nonisolated enum APIMediaType: String, Decodable, Sendable {
     case image = "IMAGE"
     case video = "VIDEO"
     case subtitles = "SUBTITLE"

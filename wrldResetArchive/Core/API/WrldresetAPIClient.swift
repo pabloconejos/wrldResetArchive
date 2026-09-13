@@ -58,7 +58,7 @@ struct WrldresetAPIClient {
         configuration.baseURL.appending(path: mediaItem.mediaUrl)
     }
 
-    private func get<T: Decodable>(_ url: URL) async throws -> T {
+    private func get<T: Decodable & Sendable>(_ url: URL) async throws -> T {
         let (data, response) = try await URLSession.shared.data(from: url)
 
         guard let httpResponse = response as? HTTPURLResponse else {
