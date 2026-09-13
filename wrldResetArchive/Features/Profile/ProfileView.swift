@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
 
-    @StateObject private var viewModel = RemoteProfileViewModel()
+    @ObservedObject var viewModel: RemoteProfileViewModel
 
     var body: some View {
         NavigationStack {

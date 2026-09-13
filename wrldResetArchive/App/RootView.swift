@@ -9,10 +9,13 @@
 import SwiftUI
 
 struct RootView: View {
+
+    @StateObject private var profileViewModel = RemoteProfileViewModel()
+
     var body: some View {
         TabView {
             Tab("Inicio", systemImage: "house") {
-                HomeView()
+                HomeView(viewModel: profileViewModel)
             }
 
             Tab("Buscar", systemImage: "magnifyingglass") {
@@ -20,7 +23,7 @@ struct RootView: View {
             }
 
             Tab("Perfil", systemImage: "person.crop.circle") {
-                ProfileView()
+                ProfileView(viewModel: profileViewModel)
             }
         }
         .toolbarBackground(.ultraThinMaterial, for: .tabBar)
