@@ -99,16 +99,16 @@ final class RemoteProfileViewModel: ObservableObject {
         await loadMoreContents()
     }
 
+    func loadMoreContentsIfNeeded() async {
+        guard canLoadMoreContents else {
+            return
+        }
+
+        await loadMoreContents()
+    }
+
     private func shouldLoadMore(currentContent: APIInstagramContent) -> Bool {
-        guard !isLoading else {
-            return false
-        }
-
-        guard !isLoadingMore else {
-            return false
-        }
-
-        guard currentContentsPage + 1 < totalContentsPages else {
+        guard canLoadMoreContents else {
             return false
         }
 
@@ -122,6 +122,12 @@ final class RemoteProfileViewModel: ObservableObject {
         )
 
         return currentIndex >= thresholdIndex
+    }
+
+    private var canLoadMoreContents: Bool {
+        !isLoading &&
+            !isLoadingMore &&
+            currentContentsPage + 1 < totalContentsPages
     }
 
     private func loadMoreContents() async {

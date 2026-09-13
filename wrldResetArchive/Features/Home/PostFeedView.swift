@@ -9,6 +9,7 @@ struct PostFeedView: View {
 
     let profile: APIInstagramProfile
     @ObservedObject var viewModel: RemoteProfileViewModel
+    @State private var shuffledContents: [APIInstagramContent] = []
 
     private var contents: [APIInstagramContent] {
         viewModel.contents.filter { content in
@@ -16,19 +17,25 @@ struct PostFeedView: View {
         }
     }
 
+    private var contentIDs: [String] {
+        contents.map(\.id)
+    }
+
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 24) {
-                ForEach(contents) { content in
+                ForEach(Array(shuffledContents.enumerated()), id: \.element.id) { index, content in
                     PostDetailItemView(
                         content: content,
                         profile: profile,
                         viewModel: viewModel
                     )
                     .task {
-                        await viewModel.loadMoreContentsIfNeeded(
-                            currentContent: content
-                        )
+                        guard index >= shuffledContents.count - 6 else {
+                            return
+                        }
+
+                        await viewModel.loadMoreContentsIfNeeded()
                     }
                 }
 
@@ -40,6 +47,33 @@ struct PostFeedView: View {
         }
         .refreshable {
             await viewModel.refresh()
+            shuffledContents = contents.shuffled()
         }
+        .onAppear {
+            synchronizeShuffledContents()
+        }
+        .onChange(of: contentIDs) { _, _ in
+            synchronizeShuffledContents()
+        }
+    }
+
+    private func synchronizeShuffledContents() {
+        guard !contents.isEmpty else {
+            shuffledContents = []
+            return
+        }
+
+        guard !shuffledContents.isEmpty else {
+            shuffledContents = contents.shuffled()
+            return
+        }
+
+        let availableIDs = Set(contents.map(\.id))
+        shuffledContents.removeAll { !availableIDs.contains($0.id) }
+
+        let displayedIDs = Set(shuffledContents.map(\.id))
+        let newContents = contents.filter { !displayedIDs.contains($0.id) }
+
+        shuffledContents.append(contentsOf: newContents.shuffled())
     }
 }
