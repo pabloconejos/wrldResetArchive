@@ -32,11 +32,12 @@ struct ProfilePostsGridView: View {
                 }
             }
             
-            if viewModel.isLoadingMore {
-                ProgressView()
-                    .padding()
-                    .gridCellColumns(3)
-            }
+            PaginationFooterView(
+                isLoading: viewModel.isLoadingMore,
+                errorMessage: viewModel.loadMoreErrorMessage,
+                retry: viewModel.retryLoadingMoreContents
+            )
+            .gridCellColumns(3)
         }
     }
 }

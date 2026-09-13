@@ -15,7 +15,9 @@ final class RemoteProfileViewModel: ObservableObject {
     @Published private(set) var summary: APIInstagramProfileSummary?
     @Published private(set) var contents: [APIInstagramContent] = []
     @Published private(set) var isLoading = false
-    @Published private(set) var errorMessage: String?
+    @Published private(set) var initialLoadErrorMessage: String?
+    @Published private(set) var refreshErrorMessage: String?
+    @Published private(set) var loadMoreErrorMessage: String?
     @Published private(set) var isLoadingMore = false
 
     private var currentContentsPage = 0
@@ -51,15 +53,19 @@ final class RemoteProfileViewModel: ObservableObject {
     private func loadProfile(showFullScreenLoading: Bool) async {
         if showFullScreenLoading {
             isLoading = true
+            initialLoadErrorMessage = nil
+        } else {
+            refreshErrorMessage = nil
         }
-
-        errorMessage = nil
 
         do {
             let profiles = try await apiClient.fetchProfiles()
 
             guard let firstProfile = profiles.first else {
-                errorMessage = "No profiles found"
+                setLoadError(
+                    "No profiles found",
+                    isInitialLoad: showFullScreenLoading
+                )
                 isLoading = false
                 return
             }
@@ -79,10 +85,14 @@ final class RemoteProfileViewModel: ObservableObject {
             contents = firstContentsPage.content
             currentContentsPage = firstContentsPage.page.number
             totalContentsPages = firstContentsPage.page.totalPages
+            loadMoreErrorMessage = nil
 
             isLoading = false
         } catch {
-            errorMessage = error.localizedDescription
+            setLoadError(
+                error.localizedDescription,
+                isInitialLoad: showFullScreenLoading
+            )
             isLoading = false
         }
     }
@@ -92,6 +102,10 @@ final class RemoteProfileViewModel: ObservableObject {
     }
     
     func loadMoreContentsIfNeeded(currentContent: APIInstagramContent) async {
+        guard loadMoreErrorMessage == nil else {
+            return
+        }
+
         guard shouldLoadMore(currentContent: currentContent) else {
             return
         }
@@ -100,6 +114,10 @@ final class RemoteProfileViewModel: ObservableObject {
     }
 
     func loadMoreContentsIfNeeded() async {
+        guard loadMoreErrorMessage == nil else {
+            return
+        }
+
         guard canLoadMoreContents else {
             return
         }
@@ -136,7 +154,7 @@ final class RemoteProfileViewModel: ObservableObject {
         }
 
         isLoadingMore = true
-        errorMessage = nil
+        loadMoreErrorMessage = nil
 
         do {
             let nextPage = currentContentsPage + 1
@@ -152,8 +170,28 @@ final class RemoteProfileViewModel: ObservableObject {
             totalContentsPages = nextContentsPage.page.totalPages
             isLoadingMore = false
         } catch {
-            errorMessage = error.localizedDescription
+            loadMoreErrorMessage = error.localizedDescription
             isLoadingMore = false
+        }
+    }
+
+    func dismissRefreshError() {
+        refreshErrorMessage = nil
+    }
+
+    func retryLoadingMoreContents() async {
+        guard canLoadMoreContents else {
+            return
+        }
+
+        await loadMoreContents()
+    }
+
+    private func setLoadError(_ message: String, isInitialLoad: Bool) {
+        if isInitialLoad {
+            initialLoadErrorMessage = message
+        } else {
+            refreshErrorMessage = message
         }
     }
 }

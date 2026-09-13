@@ -39,10 +39,11 @@ struct PostFeedView: View {
                     }
                 }
 
-                if viewModel.isLoadingMore {
-                    ProgressView()
-                        .padding()
-                }
+                PaginationFooterView(
+                    isLoading: viewModel.isLoadingMore,
+                    errorMessage: viewModel.loadMoreErrorMessage,
+                    retry: viewModel.retryLoadingMoreContents
+                )
             }
         }
         .refreshable {

@@ -21,7 +21,7 @@ struct HomeView: View {
                         profile: profile,
                         viewModel: viewModel
                     )
-                } else if let errorMessage = viewModel.errorMessage {
+                } else if let errorMessage = viewModel.initialLoadErrorMessage {
                     ScrollView {
                         ContentUnavailableView(
                             "No se pudo cargar",
@@ -42,6 +42,27 @@ struct HomeView: View {
             .task {
                 await viewModel.load()
             }
+            .alert(
+                "No se pudo actualizar",
+                isPresented: isPresentingRefreshError
+            ) {
+                Button("Aceptar", role: .cancel) {
+                    viewModel.dismissRefreshError()
+                }
+            } message: {
+                Text(viewModel.refreshErrorMessage ?? "")
+            }
         }
+    }
+
+    private var isPresentingRefreshError: Binding<Bool> {
+        Binding(
+            get: { viewModel.refreshErrorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.dismissRefreshError()
+                }
+            }
+        )
     }
 }

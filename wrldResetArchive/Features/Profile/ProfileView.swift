@@ -33,7 +33,7 @@ struct ProfileView: View {
                     .refreshable {
                         await viewModel.refresh()
                     }
-                } else if let errorMessage = viewModel.errorMessage {
+                } else if let errorMessage = viewModel.initialLoadErrorMessage {
                     ScrollView {
                         ContentUnavailableView(
                             "No se pudo cargar",
@@ -61,7 +61,28 @@ struct ProfileView: View {
             .task {
                 await viewModel.load()
             } // este .task significa => Cuando esta vista aparece en pantalla, ejecuta esta tarea asíncrona.
+            .alert(
+                "No se pudo actualizar",
+                isPresented: isPresentingRefreshError
+            ) {
+                Button("Aceptar", role: .cancel) {
+                    viewModel.dismissRefreshError()
+                }
+            } message: {
+                Text(viewModel.refreshErrorMessage ?? "")
+            }
         }
+    }
+
+    private var isPresentingRefreshError: Binding<Bool> {
+        Binding(
+            get: { viewModel.refreshErrorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.dismissRefreshError()
+                }
+            }
+        )
     }
 
     private var addButton: some View {

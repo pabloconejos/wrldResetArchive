@@ -29,7 +29,8 @@ struct PostDetailItemView: View {
     @ViewBuilder
     private var postMedia: some View {
         if let firstMedia = content.mediaItems.first {
-            if firstMedia.mediaType == .image {
+            switch firstMedia.mediaType {
+            case .image:
                 AsyncImage(url: viewModel.mediaURL(for: firstMedia)) { image in
                     image
                         .resizable()
@@ -40,17 +41,23 @@ struct PostDetailItemView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .background(Color.black)
-            } else {
-                ZStack {
-                    Rectangle()
-                        .fill(Color.black)
-                        .frame(height: 350)
 
-                    Image(systemName: "play.fill")
-                        .font(.largeTitle)
-                        .foregroundStyle(.white)
-                }
+            case .video:
+                RemoteVideoPlayerView(
+                    url: viewModel.mediaURL(for: firstMedia)
+                )
+                .frame(height: 350)
+
+            default:
+                ContentUnavailableView(
+                    "Vídeo no compatible",
+                    systemImage: "video.slash"
+                )
+                .frame(height: 350)
             }
+            
+            
+            
         } else {
             ContentUnavailableView(
                 "Contenido no disponible",
